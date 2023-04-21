@@ -1,0 +1,62 @@
+----
+dynamoDB
+
+java -D"java.library.path=./DynamoDBLocal_lib" -jar DynamoDBLocal.jar -sharedDb -dbPath .
+aws configure
+aws dynamodb list-tables --endpoint-url http://localhost:4566
+
+
+run localstack
+
+py "C:\Users\trinhxuanhieu\AppData\Local\Programs\Python\Python310\Scripts\\localstack" start
+py "C:\Users\trinhxuanhieu\AppData\Local\Programs\Python\Python310\Scripts\\localstack" status services
+
+
+
+setup s3
+setup python
+setup pip
+py -m pip install localstack
+pip install awscli-local
+
+pip install awscli --user
+
+//create bucket s3
+aws --endpoint-url=http://localhost:4566 s3 mb s3://test1
+//check 
+aws --endpoint-url=http://localhost:4566 s3 ls
+
+
+
+
+1) Create s3 bucket - 
+# aws --endpoint-url=http://localhost:4566 s3 mb s3://order
+
+2) List s3 buckets - 
+# aws --endpoint-url="http://localhost:4566" s3 ls
+
+3) Upload file on s3 bucket -
+# aws --endpoint-url="http://localhost:4566" s3 sync "C:/Users/trinhxuanhieu/Desktop/data/order" s3://order
+
+http://localhost:4566/test1/testUser.json
+
+4) List files from AWS CLI -
+# aws --endpoint-url="http://localhost:4566" s3 ls s3://my-test-bucket
+
+6) Access file via URL(File name was download.jpg) - 
+# http://localhost:4566/my-test-bucket/download.jpg
+
+7) Delete object from bucket -
+# aws --endpoint-url=http://localhost:4566 s3api delete-object --bucket <bucket-name> --key <file-name.format>
+
+8) Create bucket notification configuration - 
+# aws --endpoint-url=http://localhost:4566 s3api put-bucket-notification-configuration --bucket <bucket-name> --notification-configuration file://<configuration-file-name>.json
+
+9) Get bucket notification configuration - 
+# aws --endpoint-url=http://localhost:4566 s3api get-bucket-notification-configuration --bucket <bucket-name>
+
+10) Set bucket policy - 
+# aws --endpoint-url=http://localhost:4566 s3api put-bucket-policy --bucket <bucket-name> --policy file://<policy-file>.json
+
+10) Get bukcet policy - 
+# aws --endpoint-url=http://localhost:4566 s3api get-bucket-policy --bucket <bucket-name>
