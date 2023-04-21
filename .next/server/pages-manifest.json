@@ -2,6 +2,6 @@
   "/_app": "pages/_app.js",
   "/_error": "pages/_error.js",
   "/_document": "pages/_document.js",
-  "/order/list": "pages/order/list.js",
-  "/api/order/list": "pages/api/order/list.js"
+  "/api/order/add": "pages/api/order/add.js",
+  "/order/add": "pages/order/add.js"
 }

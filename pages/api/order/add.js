@@ -2,8 +2,10 @@ import AWS from 'aws-sdk'
 import * as uuid from 'uuid';
 
 AWS.config.update({
+    accessKeyId: 'hieu',
+    secretAccessKey: 'hieu', 
     region: "local",
-    endpoint: "http://localhost:8000"
+    endpoint: "http://127.0.0.1:4566"
 });
 
 export default async function handler(req, res) {
