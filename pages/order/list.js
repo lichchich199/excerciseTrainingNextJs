@@ -1,16 +1,11 @@
 import Link from "next/link"
 import { Layout } from "../../components/layout"
-import { useEffect, useState } from "react";
-import { geDataOrders } from '../../lib/order'
 import useSWR from 'swr';
+import { fetcherListOrder } from "../../lib/fetchJson";
+import style from '../../components/List.module.css'
 
-
-const fetcher = async () => {
-   const res =  await fetch('/api/order/list')
-   return await res.json();
-}
 export default function List() {
-    const {data} = useSWR('/api/order/list', fetcher);
+    const {data} = useSWR('/api/order/list', fetcherListOrder);
     var listOrder = data ? JSON.parse(data) : {};
     listOrder = listOrder.orders ? listOrder.orders : [];
 
@@ -21,8 +16,12 @@ export default function List() {
 
     return(
         <Layout>
-            <h3>List User</h3>
-            <button type="button" className="btn btn-primary"><Link className="text-light" href='/contact/add'>Add</Link></button>
+            <div class={`input-group rounded ${style.searchBlock}`}>
+                <input type="date" class="form-control rounded" placeholder="Ngày bắt đầu" aria-label="Search" aria-describedby="search-addon" />
+                <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+                <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search" aria-describedby="search-addon" />
+
+            </div>
             <table className="table table-bordered">
                 <thead>
                     <tr>
@@ -34,7 +33,6 @@ export default function List() {
                         <th scope="col">TBPD</th>
                         <th scope="col">TTH</th>
                         <th scope="col" rowSpan={2}>Số người</th>
-                        <th scope="col" rowSpan={2}>Số người</th>
                         <th scope="col" rowSpan={2}>Chi phí</th>
                         <th rowSpan={2}></th>
                     </tr>
@@ -43,47 +41,46 @@ export default function List() {
                         <th>NN</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody className="text-center">
                     {
                         listOrder.map((order, index) => {
                             return(
+                                <>
                                 <tr key={order.orderNumber}>
-                                    <th scope="row"><Link href={`/contact/edit/${order.orderNumber}`}>{++index}</Link> </th>
-                                    <td>{order.orderNumber}</td>
-                                    <td>{order.orderStatus}</td>
-                                    <td>{order.orderDay}</td>
-                                    <td>{order.estimateStartDate}</td>
-                                    <td>
-                                        <tr>
-                                            {order.orderDepartment}
-                                        </tr>
-                                        <tr>
-                                            {order.contractStatus}
-                                        </tr>
-                                    </td>
-                                    <td>
-                                        <tr>
-                                            {order.workplaceDepartment}
-                                        </tr>
-                                        <tr>
-                                            {order.career}
-                                        </tr>
-                                    </td>
-                                    <td>{order.numPeopleUndecided}</td>
-                                    <td>{order.numPeopleUndecided2}</td>
-                                    <td>{order.fee}</td>
-                                    <td>
+                                    <td rowSpan={2}>{++index}</td>
+                                    <td rowSpan={2}>{order.orderNumber}</td>
+                                    <td rowSpan={2}>{order.orderStatus}</td>
+                                    <td rowSpan={2}>{order.orderDay}</td>
+                                    <td rowSpan={2}>{order.estimateStartDate}</td>
+                                    <td> {order.orderDepartment}</td>
+                                    <td>{order.workplaceDepartment}</td>
+                                    <td rowSpan={2}>{order.numPeopleUndecided}</td>
+                                    <td rowSpan={2}>{order.fee}</td>
+                                    <td rowSpan={2}>
                                         <button type="button" className="btn btn-secondary" onClick={() => {
                                             deleteContact(contact.id)
                                         }}>Delete</button>
                                     </td>
 
                                 </tr>
+                                <tr>
+                                       <td>{order.contractStatus}</td>     
+                                       <td>{order.career}</td>     
+                                </tr>
+                                </>
+                               
                             )
                         })
                     }
                 </tbody>
             </table>
+            <div className="d-flex justify-content-between w-50">
+                <button type="button" className="btn btn-primary"><Link className="text-light text-decoration-none" href='/order/add'>Register</Link></button>
+                <button type="button" className="btn btn-warning"><Link className="text-light text-decoration-none" href='/order/edit'>Edit</Link></button>
+                <button type="button" className="btn btn-danger"><Link className="text-light text-decoration-none" href='/order/delete'>Delete</Link></button>
+            </div>
+
+
         </Layout>
     )
 }
