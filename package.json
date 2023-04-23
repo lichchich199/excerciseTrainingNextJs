@@ -7,6 +7,11 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.315.0",
+    "@fortawesome/fontawesome": "^1.1.8",
+    "@fortawesome/fontawesome-free": "^6.4.0",
+    "@fortawesome/fontawesome-free-solid": "^5.0.13",
+    "@fortawesome/fontawesome-svg-core": "^6.4.0",
+    "@fortawesome/react-fontawesome": "^0.2.0",
     "@hookform/resolvers": "^3.1.0",
     "aws-sdk": "^2.1362.0",
     "bootstrap": "^5.2.3",

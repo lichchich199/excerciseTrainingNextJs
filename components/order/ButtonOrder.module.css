@@ -1,0 +1,6 @@
+.button {
+    width: 80%;
+    cursor: default !important;
+}
+.button :hover {
+}

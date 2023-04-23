@@ -1,3 +1,18 @@
 .searchBlock {
     margin-bottom: 2em;
 }
+.widthBlock4 {
+    width: 23%;
+}
+
+.widthBlockButton {
+    width: 30%;
+}
+
+.headerTable {
+    border: 1px solid #484545;
+}
+
+.lineTable {
+    background-color: bisque;
+}

@@ -13,7 +13,7 @@ function Layout({ children }) {
           </Head>
           <Header />
           <main>
-            <div className="col-md-6 offset-md-3 mt-5">
+            <div className="col-md-8 offset-md-2 mt-5">
                 {children}
             </div>
           </main>

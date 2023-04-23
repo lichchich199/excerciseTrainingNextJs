@@ -65,7 +65,7 @@ import Router from 'next/router'
                             <option value="CONFIRMED">CONFIRMED</option>
                             <option value="REJECTED">REJECTED</option>
                         </select>
-                        <div className="invalid-feedback">{errors.gender?.message}</div>
+                        <div className="invalid-feedback">{errors.orderStatus?.message}</div>
                     </div>
                 </div>
                 <div className={`form-row d-flex justify-content-between ${style.marginBlock}`}>

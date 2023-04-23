@@ -8,7 +8,16 @@ AWS.config.update({
     endpoint: "http://127.0.0.1:4566"
 });
 
+export const convertGuidToInt = (id) => {
+    console.log(id.replace(/-/g, ''));
+    // remove the dashes from the given uuid and convert to a hexadecimal BigNumber object
+    const bn = new BigInt(id.replace(/-/g, ''), 16);
+    // return the string representation of the BigNumber object as a decimal
+    return bn.toString(10);
+};
+
 export default async function handler(req, res) {
+    console.log('đã vào')
     
     if(req.method !== 'POST') {
         return res.status(405).json({message: 'Method not allowed'});
@@ -19,6 +28,8 @@ export default async function handler(req, res) {
     // update to dynamoDB
 
     // validate lại data
+    var lUUID = convertGuidToInt(uuid.v4())
+    console.log('lUUID', lUUID)
     var docClient = new AWS.DynamoDB.DocumentClient();
     var params = {
         TableName: "Order",
