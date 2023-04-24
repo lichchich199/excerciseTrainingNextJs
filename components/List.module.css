@@ -16,3 +16,8 @@
 .lineTable {
     background-color: bisque;
 }
+
+.selected, .selected:hover {
+    background-color: aqua !important;
+    color: blue;
+  }

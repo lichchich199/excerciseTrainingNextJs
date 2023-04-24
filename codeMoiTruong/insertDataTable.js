@@ -64,36 +64,6 @@ const input = {
               }
             }
           }
-        // },
-        // {
-        //   "PutRequest": {
-        //     "Item": {
-        //       "AlbumTitle": {
-        //         "S": "Songs About Life"
-        //       },
-        //       "Artist": {
-        //         "S": "Acme Band"
-        //       },
-        //       "SongTitle": {
-        //         "S": "Happy Day"
-        //       }
-        //     }
-        //   }
-        // },
-        // {
-        //   "PutRequest": {
-        //     "Item": {
-        //       "AlbumTitle": {
-        //         "S": "Blue Sky Blues"
-        //       },
-        //       "Artist": {
-        //         "S": "No One You Know"
-        //       },
-        //       "SongTitle": {
-        //         "S": "Scared of My Shadow"
-        //       }
-        //     }
-        //   }
         }
       ]
     }
@@ -102,4 +72,3 @@ const input = {
   const res = await client.send(command);
   console.log(res)
 });
-  // example id: to-add-multiple-items-to-a-table-1476118519747

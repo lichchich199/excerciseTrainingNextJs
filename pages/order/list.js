@@ -11,13 +11,13 @@ import { handleSortDataOrders, handleSearchOrders } from "../../components/order
 import FormSearchOrder from "../../components/order/FormSearchOrder";
 
 export default function List() {
-    console.log('render')
-    
     var [listOrder, setListOrder] = useState([]);
     var [orderNumberSort, setOrderNumberSort] = useState('asc');
     var [orderStatusSort, setOrderStatusSort] = useState('asc');
     var [orderDaySort, setOrderDaySort] = useState('asc');
     var [estimateStartDateSort, setEstimateStartDateSort] = useState('asc');
+
+    var [selectedRow, setSelectedRow] = useState(-1);
 
     useEffect(() => {
         // const { data } = await useSWR('/api/order/list', fetcherListOrder);
@@ -68,6 +68,11 @@ export default function List() {
         setListOrder(listOrderSearched)
     }
 
+    const handleEditOrder = () => {
+        setSelectedRow(!selected)
+    }
+    console.log('selectedRow', selectedRow)
+
     return(
         <Layout>
             <FormSearchOrder onSubmit={(data) => {
@@ -108,7 +113,7 @@ export default function List() {
                         listOrder.map((order, index) => {
                             return(
                                 <>
-                                <tr key={order.orderNumber} className={index%2!==0 ? style.lineTable : ''} onClick={() => console.log(order.orderNumber)}>
+                                <tr key={order.orderNumber} className={(index%2!==0 ? style.lineTable  : '') + (selectedRow === order.orderNumber ? ` ${style.selected}` : '')} onClick={() => setSelectedRow(order.orderNumber)}>
                                     <td rowSpan={2}>{++index}</td>
                                     <td rowSpan={2}>{order.orderNumber}</td>
                                     <td rowSpan={2}>
@@ -121,7 +126,7 @@ export default function List() {
                                     <td rowSpan={2}>{order.numPeopleUndecided}</td>
                                     <td rowSpan={2}>{order.fee}</td>
                                 </tr>
-                                <tr className={index%2==0 ? style.lineTable : ''} onClick={() => console.log(index)}>
+                                <tr className={(index%2==0 ? style.lineTable : '') + (selectedRow === order.orderNumber ? ` ${style.selected}` : '')} onClick={() => setSelectedRow(order.orderNumber)}>
                                        <td>{order.contractStatus}</td>     
                                        <td>{order.career}</td>   
                                 </tr>
@@ -132,15 +137,9 @@ export default function List() {
                     }
                 </tbody>
             </table>
-
-
-
-
-
-            
             <div className={`d-flex justify-content-between ${style.widthBlockButton}`}>
                 <button type="button" className="btn btn-primary"><Link className="text-light text-decoration-none" href='/order/add'>Register</Link></button>
-                <button type="button" className="btn btn-warning"><Link className="text-light text-decoration-none" href='/order/edit'>Edit</Link></button>
+                <button type="button" className="btn btn-warning"><Link className="text-light text-decoration-none" href={`/order/detail/${selectedRow}`}>Edit</Link></button>
                 <button type="button" className="btn btn-danger"><Link className="text-light text-decoration-none" href='/order/delete'>Delete</Link></button>
             </div>
 

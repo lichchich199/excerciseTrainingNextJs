@@ -29,8 +29,9 @@ export const handleSearchOrders = (listOrder, objectFilter) => {
     if(objectFilter.orderDay) {
         var dateSearch = new Date(objectFilter.orderDay);
         listOrderSearched = listOrderSearched.filter((order) => {
-            let dataDBConvert = convertShortDateToISODate(order.orderDay);
-            let dateDB = new Date(dataDBConvert);
+            // let dataDBConvert = convertShortDateToISODate(order.orderDay);
+            // let dateDB = new Date(dataDBConvert);
+            let dateDB = new Date(order.orderDay);
             return dateSearch.getTime() === dateDB.getTime()
         })
     }
@@ -46,11 +47,11 @@ export const handleSearchOrders = (listOrder, objectFilter) => {
     }
     return listOrderSearched
 }
-export const padTo2Digits = (num) => {
-    return num.toString().padStart(2, '0');
-  }
+// export const padTo2Digits = (num) => {
+//     return num.toString().padStart(2, '0');
+//   }
 
-export const convertShortDateToISODate = (shortDate) => {
-    const [year, month, date] = shortDate ? shortDate.split('/') : [];
-    return `${year}-${padTo2Digits(month || '')}-${padTo2Digits(date || '')}`
-}
+// export const convertShortDateToISODate = (shortDate) => {
+//     const [year, month, date] = shortDate ? shortDate.split('/') : [];
+//     return `${year}-${padTo2Digits(month || '')}-${padTo2Digits(date || '')}`
+// }

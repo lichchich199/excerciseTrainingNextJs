@@ -1,64 +1,89 @@
-import AWS from 'aws-sdk'
-import * as uuid from 'uuid';
+import { DynamoDBClient, BatchWriteItemCommand } from "@aws-sdk/client-dynamodb"; // ES Modules import
 
-AWS.config.update({
-    accessKeyId: 'hieu',
-    secretAccessKey: 'hieu', 
-    region: "local",
-    endpoint: "http://127.0.0.1:4566"
+const ACCESS_KEY = 'hieu';
+const SECRET_KEY = 'hieu';
+const client = new DynamoDBClient({
+    accessKeyId: ACCESS_KEY,
+    secretAccessKey: SECRET_KEY, 
+    region: 'us-east-1', 
+    endpoint: 'http://127.0.0.1:4566'
 });
 
-export const convertGuidToInt = (id) => {
-    console.log(id.replace(/-/g, ''));
-    // remove the dashes from the given uuid and convert to a hexadecimal BigNumber object
-    const bn = new BigInt(id.replace(/-/g, ''), 16);
-    // return the string representation of the BigNumber object as a decimal
-    return bn.toString(10);
-};
+export function generateRowId(shardId /* range 0-64 for shard/slot */) {
+    var CUSTOMEPOCH = 1300000000000; // artificial epoch
+    var ts = new Date().getTime() - CUSTOMEPOCH; // limit to recent
+    var randid = Math.floor(Math.random() * 512);
+    ts = (ts * 64);   // bit-shift << 6
+    ts = ts + shardId;
+    return (ts * 512) + randid;
+}
 
 export default async function handler(req, res) {
-    console.log('đã vào')
-    
+    console.log('req.body', req.body)
     if(req.method !== 'POST') {
         return res.status(405).json({message: 'Method not allowed'});
     }
-    var data = req.body
-    console.log('line 9',data.gender);
-    
-    // update to dynamoDB
-
-    // validate lại data
-    var lUUID = convertGuidToInt(uuid.v4())
-    console.log('lUUID', lUUID)
-    var docClient = new AWS.DynamoDB.DocumentClient();
-    var params = {
-        TableName: "Order",
-        Item: {
-            // "orderNumber": uuid.v4(),
-            // "orderStatus": data.orderStatus,
-            // "orderDay": data.orderDay,
-            // "estimateStartDate": data.estimateStartDate,
-            // "orderDepartment": data.orderDepartment,
-            // "contractStatus": data.contractStatus,
-            // "workplaceDepartment": data.workplaceDepartment,
-            // "career": data.career,
-            // "numPeopleOrder": data.numPeopleOrder,
-            // "numPeopleUndecided": data.numPeopleUndecided,
-            // "numPeopleUndecided2": data.numPeopleUndecided2,
-            // "fee": data.fee,
-            // "addressOrder": data.addressOrder,
-            // "info1": data.info1,
-            // "info2": data.info2
+    var order = req.body
+    // validate
+    const input = {
+        "RequestItems": {
+        "Order": [
+            {
+            "PutRequest": {
+                "Item": {
+                "orderNumber": {
+                    "S": generateRowId(4)+''
+                },
+                "orderStatus": {
+                    "S": order?.orderStatus
+                },
+                "orderDay": {
+                    "S": order?.orderDay,
+                },
+                "estimateStartDate": {
+                    "S":  order?.estimateStartDate,
+                },
+                "orderDepartment": {
+                    "S": order?.orderDepartment,
+                },
+                "contractStatus": {
+                    "S": order?.contractStatus,
+                },
+                "workplaceDepartment": {
+                    "S": order?.workplaceDepartment,
+                },
+                "career": {
+                    "S": order?.career,
+                },
+                "numPeopleOrder": {
+                    "S": order?.numPeopleOrder,
+                },
+                "numPeopleUndecided": {
+                    "S": order?.numPeopleUndecided,
+                },
+                "numPeopleUndecided2": {
+                    "S": order?.numPeopleUndecided2 || '',
+                },
+                "fee": {
+                    "S": order?.fee,
+                },
+                "addressOrder": {
+                    "S": order?.addressOrder,
+                },
+                "info1": {
+                    "S": order?.info1,
+                },
+                "info2": {
+                    "S": order?.info2,
+                }
+                }
+            }
+            }
+        ]
         }
     };
-    docClient.put(params, function(err, data) {
-        if (err) {
-            console.error(err);
-            return res.status(500).json({message: 'Insert fail'})
-        } else {
-            console.log("PutItem succeeded:", uuid.v4());
-            return res.status(200).json({message:'Success'}); 
-        }
-     });
-
-  }
+    const command = new BatchWriteItemCommand(input);
+    const ress = await client.send(command);
+    // console.log(ress)
+    res.status(200).json(ress); 
+}

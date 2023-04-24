@@ -6,9 +6,8 @@ import { useState } from 'react';
 
  export default function Add() {
     // handle add order
-    var [msg, setmsg] = useState('a')
     async function InsertOrder (data) {
-        console.log(data);
+        console.log('insert',data);
         const response = await fetch('/api/order/add', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -38,7 +37,6 @@ import { useState } from 'react';
 
     return (
         <Layout>
-            {msg}
             <div className="card m-3">
                 <h5 className="card-header">Insert Order</h5>
                 <div className="card-body">
