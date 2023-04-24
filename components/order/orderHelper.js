@@ -55,3 +55,23 @@ export const handleSearchOrders = (listOrder, objectFilter) => {
 //     const [year, month, date] = shortDate ? shortDate.split('/') : [];
 //     return `${year}-${padTo2Digits(month || '')}-${padTo2Digits(date || '')}`
 // }
+
+export const convertItemDynomoDbToObject = (item) => {
+    return {
+        "orderNumber": item?.orderNumber?.S || '',
+        "orderStatus": item?.orderStatus?.S || '',
+        "orderDay": item?.orderDay?.S || '',
+        "estimateStartDate": item?.estimateStartDate?.S || '',
+        "orderDepartment": item?.orderDepartment?.S || '',
+        "contractStatus": item?.contractStatus?.S || '',
+        "workplaceDepartment": item?.workplaceDepartment?.S || '',
+        "career": item?.career?.S || '',
+        "numPeopleOrder": item?.numPeopleOrder?.S || '',
+        "numPeopleUndecided": item?.numPeopleUndecided?.S || '',
+        "numPeopleUndecided2": item?.numPeopleUndecided2?.S || '',
+        "fee": item?.fee?.S || '',
+        "addressOrder": item?.addressOrder?.S || '',
+        "info1": item?.info1?.S || '',
+        "info2": item?.info2?.S || ''
+    }
+}

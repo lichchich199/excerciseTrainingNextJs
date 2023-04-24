@@ -2,10 +2,13 @@ import Router from 'next/router'
 
 import { Layout } from '../../../components/layout';
 import FormOrder from '../../../components/order/FormOrder';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { convertItemDynomoDbToObject } from '../../../components/order/orderHelper';
 
- export default function Edit() {
+ export default function Edit({orderNumber}) {
+    console.log('orderNumber:', orderNumber)
     const [order, setOrder] = useState({});
+    const [orderNum, setOrderNum] = useState(orderNumber);
 
     // handle add order
     async function UpdateOrder (data) {
@@ -36,6 +39,19 @@ import { useState } from 'react';
         return await response.json()
     }
 
+    useEffect(() => {
+        const fetchData = async () => {
+            const response = await fetch(`/api/order/getItem?orderNumber=${orderNumber}`).then(res => res.json()).catch()
+            // if(!response.ok) {
+            //     console.log(response.statusText)
+            // }
+            setOrder(response.Item);
+            return response
+        }
+        fetchData();
+    }, [orderNumber])
+    console.log('line52:',order )
+
     return (
         <Layout>
             <div className="card m-3">
@@ -51,10 +67,18 @@ import { useState } from 'react';
                                 console.log('error:', error)
                             }}}
                         titleButton='Edit'
-                        valuesEdit = {order}
+                        valuesEdit = {convertItemDynomoDbToObject(order)}
                     />
                 </div>
             </div>
         </Layout>
     );
 }
+
+// get param from url and set to props
+export async function getServerSideProps({ params }) {
+    console.log(params)
+    return {
+        props: { orderNumber: params?.id}
+    }
+  }

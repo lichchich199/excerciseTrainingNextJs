@@ -54,8 +54,8 @@ import Router from 'next/router'
                 <div className="form-row d-flex justify-content-between">
                     <div className={`form-group ${style.widthBlock2}`}>
                         <label>Order</label>
-                        <input name="orderId" type="text" {...register('orderId')} className={`form-control ${errors.orderId ? 'is-invalid' : ''}`} disabled/>
-                        <div className="invalid-feedback">{errors.orderId?.message}</div>
+                        <input name="orderNumber" type="text" {...register('orderNumber')} className={`form-control ${errors.orderNumber ? 'is-invalid' : ''}`} disabled/>
+                        <div className="invalid-feedback">{errors.orderNumber?.message}</div>
                     </div>
                     <div className={`form-group ${style.widthBlock2}`}>
                         <label>Order Status</label>

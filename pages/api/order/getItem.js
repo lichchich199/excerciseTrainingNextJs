@@ -11,6 +11,7 @@ const client = new DynamoDBClient({
 
 export default async function handler(req, res) {
     // validate
+    console.log( 'req.query.orderNumber',req.query.orderNumber)
     const input = {
         TableName: "Order", //TABLE_NAME
         Key: {
