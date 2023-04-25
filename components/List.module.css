@@ -14,10 +14,10 @@
 }
 
 .lineTable {
-    background-color: bisque;
+    background-color: #f3f1ef;
 }
 
 .selected, .selected:hover {
-    background-color: aqua !important;
-    color: blue;
+    background-color: #df8080 ;
+    color: #fff;
   }

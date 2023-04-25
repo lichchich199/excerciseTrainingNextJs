@@ -7,7 +7,7 @@ import ButtonOrder from "../../components/order/ButtonOrder";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSort } from '@fortawesome/fontawesome-free-solid'
 import { useEffect, useState } from "react";
-import { handleSortDataOrders, handleSearchOrders } from "../../components/order/orderHelper";
+import { handleSortDataOrders, handleSearchOrders, convertItemDynomoDbToObject } from "../../components/order/orderHelper";
 import FormSearchOrder from "../../components/order/FormSearchOrder";
 
 export default function List() {
@@ -18,15 +18,17 @@ export default function List() {
     var [estimateStartDateSort, setEstimateStartDateSort] = useState('asc');
 
     var [selectedRow, setSelectedRow] = useState(-1);
+    var [clickedEdit, setClickedEdit] = useState(false);
 
     useEffect(() => {
-        // const { data } = await useSWR('/api/order/list', fetcherListOrder);
         const loadData = async () => {
             const response = await fetch('/api/order/list').then(res => res.json()).catch()
-            var orders = JSON.parse(response);
-            if(orders.orders) {
-                setListOrder(orders.orders)
+            // var orders = JSON.parse(response);
+            //dynamo
+            if(response.Items) {
+                setListOrder(response.Items)
             }
+            //dynamo
         }
         loadData()
     }, [])
@@ -67,17 +69,31 @@ export default function List() {
         let listOrderSearched = handleSearchOrders(listOrderSearch, data);
         setListOrder(listOrderSearched)
     }
-
-    const handleEditOrder = () => {
-        setSelectedRow(!selected)
+    const handleDeleteOrder = async function(orderNumber) {
+        const response = await fetch('/api/order/delete', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                "orderNumber": orderNumber
+            })
+        })
+        if(!response.ok) {
+            throw new Error(response.statusText)
+        }
+        setSelectedRow(-1)
+        const responseList = await fetch('/api/order/list').then(res => res.json()).catch()
+        var orders = JSON.parse(responseList);
+        if(orders.orders) {
+            setListOrder(orders.orders)
+        }
     }
-    console.log('selectedRow', selectedRow)
 
     return(
         <Layout>
             <FormSearchOrder onSubmit={(data) => {
                 handleSearchListOrder(data)
             }}/>
+            {(selectedRow === -1) && clickedEdit && <div class="alert alert-danger">Please choose one.</div>}
             <table className="table table-bordered align-middle text-center">
                 <thead className={`align-middle ${style.headerTable}`}> 
                     <tr>
@@ -110,7 +126,10 @@ export default function List() {
                 </thead>
                 <tbody>
                     {
-                        listOrder.map((order, index) => {
+                        listOrder.map((orderItem, index) => {
+                            //dynamo
+                            var order = convertItemDynomoDbToObject(orderItem);
+                            //dynamo
                             return(
                                 <>
                                 <tr key={order.orderNumber} className={(index%2!==0 ? style.lineTable  : '') + (selectedRow === order.orderNumber ? ` ${style.selected}` : '')} onClick={() => setSelectedRow(order.orderNumber)}>
@@ -138,11 +157,30 @@ export default function List() {
                 </tbody>
             </table>
             <div className={`d-flex justify-content-between ${style.widthBlockButton}`}>
-                <button type="button" className="btn btn-primary"><Link className="text-light text-decoration-none" href='/order/add'>Register</Link></button>
-                <button type="button" className="btn btn-warning"><Link className="text-light text-decoration-none" href={`/order/detail/${selectedRow}`}>Edit</Link></button>
-                <button type="button" className="btn btn-danger"><Link className="text-light text-decoration-none" href='/order/delete'>Delete</Link></button>
+                <button type="button" className="btn btn-primary"><Link clic className="text-light text-decoration-none" href='/order/add'>Register</Link></button>
+                <button type="button" className="btn btn-warning">
+                     <Link className="text-light text-decoration-none" href={`/order/detail/${selectedRow}`} passHref legacyBehavior>
+                        <a onClick={(event) => {
+                            if(selectedRow === -1) {
+                                event.preventDefault()
+                                setClickedEdit(true)
+                            } else {
+                                setClickedEdit(false)
+                            }
+                        }}>
+                            Edit
+                        </a>
+                    </Link>
+                        </button>
+                <button type="button" className="btn btn-danger" onClick={() => {
+                    if(selectedRow !== -1) {
+                        handleDeleteOrder(selectedRow)
+                        setClickedEdit(false)
+                    } else {
+                        setClickedEdit(true)
+                    }
+                }}>Delete</button>
             </div>
-
 
         </Layout>
     )

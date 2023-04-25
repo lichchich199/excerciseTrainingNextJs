@@ -45,7 +45,6 @@ import Router from 'next/router'
     }
     const { register, handleSubmit, reset, formState } = useForm(formOptions);
     const { errors } = formState;
-    console.log(errors)
 
     return (
             <form onSubmit={handleSubmit((data) => {

@@ -4,11 +4,10 @@ import { Layout } from '../../../components/layout';
 import FormOrder from '../../../components/order/FormOrder';
 import { useEffect, useState } from 'react';
 import { convertItemDynomoDbToObject } from '../../../components/order/orderHelper';
+import Link from "next/link"
 
  export default function Edit({orderNumber}) {
-    console.log('orderNumber:', orderNumber)
     const [order, setOrder] = useState({});
-    const [orderNum, setOrderNum] = useState(orderNumber);
 
     // handle add order
     async function UpdateOrder (data) {
@@ -16,6 +15,7 @@ import { convertItemDynomoDbToObject } from '../../../components/order/orderHelp
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
+                "orderNumber": data?.orderNumber,
                 "orderStatus": data?.orderStatus,
                 "orderDay": data?.orderDay,
                 "estimateStartDate": data?.estimateStartDate,
@@ -32,7 +32,6 @@ import { convertItemDynomoDbToObject } from '../../../components/order/orderHelp
                 "info2": data?.info2
             })
         })
-        console.log('res 30', response)
         if(!response.ok) {
             throw new Error(response.statusText)
         }
@@ -42,19 +41,15 @@ import { convertItemDynomoDbToObject } from '../../../components/order/orderHelp
     useEffect(() => {
         const fetchData = async () => {
             const response = await fetch(`/api/order/getItem?orderNumber=${orderNumber}`).then(res => res.json()).catch()
-            // if(!response.ok) {
-            //     console.log(response.statusText)
-            // }
             setOrder(response.Item);
             return response
         }
         fetchData();
     }, [orderNumber])
-    console.log('line52:',order )
 
     return (
         <Layout>
-            <div className="card m-3">
+            {order ?  <div className="card m-3">
                 <h5 className="card-header">Edit Order</h5>
                 <div className="card-body">
                     <FormOrder 
@@ -70,14 +65,13 @@ import { convertItemDynomoDbToObject } from '../../../components/order/orderHelp
                         valuesEdit = {convertItemDynomoDbToObject(order)}
                     />
                 </div>
-            </div>
+            </div> : <div> <div className="alert alert-danger">Order does not exist.</div> <button type="button" className="btn btn-info"><Link href={`/order/list`}>Back to List</Link></button></div>}
         </Layout>
     );
 }
 
 // get param from url and set to props
 export async function getServerSideProps({ params }) {
-    console.log(params)
     return {
         props: { orderNumber: params?.id}
     }

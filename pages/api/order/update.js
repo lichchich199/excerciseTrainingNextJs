@@ -10,6 +10,7 @@ const client = new DynamoDBClient({
 });
 
 export default async function handler(req, res) {
+  var order = req.body;
     const params = {
         TableName: 'Order',
         UpdateExpression: `SET 
@@ -44,24 +45,24 @@ export default async function handler(req, res) {
             "#info2": "info2",
         },
         ExpressionAttributeValues: {
-            ":orderStatus": { "S": "NEW" },
-            ":orderDay": { "S": "2023-12-30" },
-            ":estimateStartDate": { "S": "2023-12-30" },
-            ":orderDepartment": { "S": "orderDepartment" },
-            ":contractStatus": { "S": "contractStatus" },
-            ":workplaceDepartment": { "S": "Very hworkplaceDepartment" },
-            ":career": { "S": "inviroment" },
-            ":numPeopleOrder": { "S": "10" },
-            ":numPeopleUndecided": { "S": "11" },
-            ":numPeopleUndecided2": { "S": "12" },
-            ":fee": { "S": "30000" },
-            ":addressOrder": { "S": "ok" },
-            ":info1": { "S": "Very happy" },
-            ":info2": { "S": "happy" },
+            ":orderStatus": { "S": order.orderStatus },
+            ":orderDay": { "S": order.orderDay },
+            ":estimateStartDate": { "S": order.estimateStartDate },
+            ":orderDepartment": { "S": order.orderDepartment },
+            ":contractStatus": { "S": order.contractStatus },
+            ":workplaceDepartment": { "S": order.workplaceDepartment },
+            ":career": { "S": order.career },
+            ":numPeopleOrder": { "S": order.numPeopleOrder },
+            ":numPeopleUndecided": { "S": order.numPeopleUndecided },
+            ":numPeopleUndecided2": { "S": order.numPeopleUndecided2 || '' },
+            ":fee": { "S": order.fee },
+            ":addressOrder": { "S": order.addressOrder },
+            ":info1": { "S": order.info1 },
+            ":info2": { "S": order.info2 },
         },
         Key: {
             "orderNumber": {
-              "S" : "3"
+              "S" : order.orderNumber
             }
         },
         ReturnValues: 'ALL_NEW'
