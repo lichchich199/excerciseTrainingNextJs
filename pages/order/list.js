@@ -7,7 +7,7 @@ import ButtonOrder from "../../components/order/ButtonOrder";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSort } from '@fortawesome/fontawesome-free-solid'
 import { useEffect, useState } from "react";
-import { handleSortDataOrders, handleSearchOrders, convertItemDynomoDbToObject } from "../../components/order/orderHelper";
+import { handleSortDataOrders, handleSearchOrders, convertItemDynomoDbToObject, convertArrItemDynamo } from "../../components/order/orderHelper";
 import FormSearchOrder from "../../components/order/FormSearchOrder";
 
 export default function List() {
@@ -19,6 +19,7 @@ export default function List() {
 
     var [selectedRow, setSelectedRow] = useState(-1);
     var [clickedEdit, setClickedEdit] = useState(false);
+    var [deleteStatus, setDeleteStatus] = useState(false);
 
     useEffect(() => {
         const loadData = async () => {
@@ -26,15 +27,15 @@ export default function List() {
             // var orders = JSON.parse(response);
             //dynamo
             if(response.Items) {
-                setListOrder(response.Items)
+                setListOrder(convertArrItemDynamo(response.Items))
             }
+            setDeleteStatus(false)
             //dynamo
         }
         loadData()
-    }, [])
+    }, [deleteStatus])
 
     const handleStatusSort = function(fieldName) {
-        console.log(listOrder)
         switch(fieldName) {
             case 'orderNumber':
                 let listOrderSortedByOrderNumber = handleSortDataOrders(listOrder, 'orderNumber', orderNumberSort)
@@ -61,9 +62,12 @@ export default function List() {
     const handleSearchListOrder = async function(data) {
             var listOrderSearch = [];
             const response = await fetch('/api/order/list').then(res => res.json()).catch()
-            var orders = JSON.parse(response);
-            if(orders.orders) {
-                listOrderSearch = orders.orders
+            // var orders = JSON.parse(response);
+            // if(orders.orders) {
+            //     listOrderSearch = orders.orders
+            // }
+            if(response.Items) {
+                listOrderSearch = convertArrItemDynamo(response.Items)
             }
 
         let listOrderSearched = handleSearchOrders(listOrderSearch, data);
@@ -80,20 +84,24 @@ export default function List() {
         if(!response.ok) {
             throw new Error(response.statusText)
         }
+        // const responseList = await fetch('/api/order/list').then(res => res.json()).catch()
+        // // var orders = JSON.parse(responseList);
+        // // if(orders.orders) {
+        //     //     setListOrder(orders.orders)
+        //     // }
+        // if(response.Items) {
+        //     setListOrder(convertArrItemDynamo(responseList.Items))
+        // }
         setSelectedRow(-1)
-        const responseList = await fetch('/api/order/list').then(res => res.json()).catch()
-        var orders = JSON.parse(responseList);
-        if(orders.orders) {
-            setListOrder(orders.orders)
-        }
+        setDeleteStatus(true);
     }
-
+    console.log('render:', listOrder )
     return(
         <Layout>
             <FormSearchOrder onSubmit={(data) => {
                 handleSearchListOrder(data)
             }}/>
-            {(selectedRow === -1) && clickedEdit && <div class="alert alert-danger">Please choose one.</div>}
+            {(selectedRow === -1) && clickedEdit && <div className="alert alert-danger">Please choose one.</div>}
             <table className="table table-bordered align-middle text-center">
                 <thead className={`align-middle ${style.headerTable}`}> 
                     <tr>
@@ -126,9 +134,9 @@ export default function List() {
                 </thead>
                 <tbody>
                     {
-                        listOrder.map((orderItem, index) => {
+                        listOrder.map((order, index) => {
                             //dynamo
-                            var order = convertItemDynomoDbToObject(orderItem);
+                            {/* var order = convertItemDynomoDbToObject(orderItem); */}
                             //dynamo
                             return(
                                 <>
@@ -157,7 +165,7 @@ export default function List() {
                 </tbody>
             </table>
             <div className={`d-flex justify-content-between ${style.widthBlockButton}`}>
-                <button type="button" className="btn btn-primary"><Link clic className="text-light text-decoration-none" href='/order/add'>Register</Link></button>
+                <button type="button" className="btn btn-primary"><Link className="text-light text-decoration-none" href='/order/add'>Register</Link></button>
                 <button type="button" className="btn btn-warning">
                      <Link className="text-light text-decoration-none" href={`/order/detail/${selectedRow}`} passHref legacyBehavior>
                         <a onClick={(event) => {

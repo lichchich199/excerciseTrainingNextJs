@@ -25,7 +25,6 @@ export const handleSortDataOrders = (listOrder, fieldName, sortValue) => {
 
 export const handleSearchOrders = (listOrder, objectFilter) => {
     var listOrderSearched = listOrder;
-    console.log(objectFilter.orderDay)
     if(objectFilter.orderDay) {
         var dateSearch = new Date(objectFilter.orderDay);
         listOrderSearched = listOrderSearched.filter((order) => {
@@ -74,4 +73,8 @@ export const convertItemDynomoDbToObject = (item) => {
         "info1": item?.info1?.S || '',
         "info2": item?.info2?.S || ''
     }
+}
+
+export const convertArrItemDynamo = (arrItem) => {
+    return arrItem.map((item) => convertItemDynomoDbToObject(item))
 }

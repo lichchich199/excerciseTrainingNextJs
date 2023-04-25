@@ -25,6 +25,16 @@
       "static/chunks/main.js",
       "static/chunks/pages/_error.js"
     ],
+    "/order/add": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/order/add.js"
+    ],
+    "/order/detail/[id]": [
+      "static/chunks/webpack.js",
+      "static/chunks/main.js",
+      "static/chunks/pages/order/detail/[id].js"
+    ],
     "/order/list": [
       "static/chunks/webpack.js",
       "static/chunks/main.js",

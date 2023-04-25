@@ -32,7 +32,5 @@ export default async (req, res) => {
         };
     const command = new ScanCommand(input);
     const ress = await client.send(command);
-    // console.log(ress)
-    console.log(ress.Items);
     res.status(200).json(ress); 
 }
