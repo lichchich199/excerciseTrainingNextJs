@@ -1,13 +1,5 @@
-import { DynamoDBClient, BatchWriteItemCommand } from "@aws-sdk/client-dynamodb"; // ES Modules import
-
-const ACCESS_KEY = 'hieu';
-const SECRET_KEY = 'hieu';
-const client = new DynamoDBClient({
-    accessKeyId: ACCESS_KEY,
-    secretAccessKey: SECRET_KEY, 
-    region: 'us-east-1', 
-    endpoint: 'http://127.0.0.1:4566'
-});
+// import { BatchWriteItemCommand } from "@aws-sdk/client-dynamodb"; // ES Modules import
+import { client, BatchWriteItemCommand } from "../../../lib/dbConfig";
 
 export function generateRowId(shardId /* range 0-64 for shard/slot */) {
     var CUSTOMEPOCH = 1300000000000; // artificial epoch

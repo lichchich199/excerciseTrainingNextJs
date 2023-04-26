@@ -1,21 +1,36 @@
 import Link from "next/link"
-import { Layout } from "../../components/layout"
-import useSWR from 'swr';
-import { fetcherListOrder } from "../../lib/fetchJson";
-import style from '../../components/List.module.css'
-import ButtonOrder from "../../components/order/ButtonOrder";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSort } from '@fortawesome/fontawesome-free-solid'
 import { useEffect, useState } from "react";
-import { handleSortDataOrders, handleSearchOrders, convertItemDynomoDbToObject, convertArrItemDynamo } from "../../components/order/orderHelper";
+import { faSort } from '@fortawesome/fontawesome-free-solid'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
+import { Layout } from "../../components/layout"
+import ButtonOrder from "../../components/order/ButtonOrder";
 import FormSearchOrder from "../../components/order/FormSearchOrder";
+import style from '../../components/order/List.module.css'
+import { handleSortDataOrders, handleSearchOrders, convertArrItemDynamo } from "../../components/order/orderHelper";
+import { useDispatch, useSelector } from 'react-redux';
+import { 
+    changeSortOrderNumber, 
+    changeSortOrderStatus, 
+    changeSortOrderDay, 
+    changeSortEstimateStartDate,  
+    getOrderStatusSort,
+    getOrderDaySort, 
+    getOrderNumberSort, 
+    getEstimateStartDateSort, 
+} from '../../components/order/slice';
 
 export default function List() {
+    const dispatch = useDispatch();
     var [listOrder, setListOrder] = useState([]);
-    var [orderNumberSort, setOrderNumberSort] = useState('asc');
-    var [orderStatusSort, setOrderStatusSort] = useState('asc');
-    var [orderDaySort, setOrderDaySort] = useState('asc');
-    var [estimateStartDateSort, setEstimateStartDateSort] = useState('asc');
+    // var [orderNumberSort, setOrderNumberSort] = useState('asc');
+    // var [orderStatusSort, setOrderStatusSort] = useState('asc');
+    // var [orderDaySort, setOrderDaySort] = useState('asc');
+    // var [estimateStartDateSort, setEstimateStartDateSort] = useState('asc');
+    var orderNumberSort = useSelector((state) => state.orderNumberSort)
+    var orderStatusSort = useSelector((state) => state.orderStatusSort)
+    var orderDaySort = useSelector((state) => state.orderDaySort)
+    var estimateStartDateSort = useSelector((state) => state.estimateStartDateSort)
 
     var [selectedRow, setSelectedRow] = useState(-1);
     var [clickedEdit, setClickedEdit] = useState(false);
@@ -34,12 +49,14 @@ export default function List() {
         }
         loadData()
     }, [deleteStatus])
+    console.log('orderNumberSort',orderNumberSort)
 
     const handleStatusSort = function(fieldName) {
         switch(fieldName) {
             case 'orderNumber':
                 let listOrderSortedByOrderNumber = handleSortDataOrders(listOrder, 'orderNumber', orderNumberSort)
-                setOrderNumberSort(orderNumberSort === 'asc' ? 'desc' : 'asc');
+                // setOrderNumberSort(orderNumberSort === 'asc' ? 'desc' : 'asc');
+                dispatch(changeSortOrderNumber({status: (orderNumberSort === 'asc' ? 'desc' : 'asc')}))
                 setListOrder(listOrderSortedByOrderNumber);
                 break
             case 'orderStatus':
@@ -85,17 +102,16 @@ export default function List() {
             throw new Error(response.statusText)
         }
         // const responseList = await fetch('/api/order/list').then(res => res.json()).catch()
-        // // var orders = JSON.parse(responseList);
-        // // if(orders.orders) {
-        //     //     setListOrder(orders.orders)
-        //     // }
+        // var orders = JSON.parse(responseList);
+        // if(orders.orders) {
+            //     setListOrder(orders.orders)
+            // }
         // if(response.Items) {
         //     setListOrder(convertArrItemDynamo(responseList.Items))
         // }
         setSelectedRow(-1)
         setDeleteStatus(true);
     }
-    console.log('render:', listOrder )
     return(
         <Layout>
             <FormSearchOrder onSubmit={(data) => {

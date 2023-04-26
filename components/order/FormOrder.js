@@ -1,10 +1,9 @@
+import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import * as Yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import  style from  '../FormOrder.module.css'
 
-import Link from 'next/link';
-import Router from 'next/router'
+import  style from  './FormOrder.module.css'
 
 // form for add edit confirm contact
  export default function FormOrder(props) {

@@ -1,13 +1,4 @@
-import { DynamoDBClient, UpdateItemCommand } from "@aws-sdk/client-dynamodb"; // ES Modules import
-
-const ACCESS_KEY = 'hieu';
-const SECRET_KEY = 'hieu';
-const client = new DynamoDBClient({
-    accessKeyId: ACCESS_KEY,
-    secretAccessKey: SECRET_KEY, 
-    region: 'us-east-1', 
-    endpoint: 'http://127.0.0.1:4566'
-});
+import { client, UpdateItemCommand } from "../../../lib/dbConfig";
 
 export default async function handler(req, res) {
   var order = req.body;
@@ -68,7 +59,5 @@ export default async function handler(req, res) {
         ReturnValues: 'ALL_NEW'
     };
     const ress = await client.send(new UpdateItemCommand(params))
-    // console.log(ress)
-    console.log(ress.Item);
     res.status(200).json(ress); 
 }

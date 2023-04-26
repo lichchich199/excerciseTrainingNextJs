@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form';
-import  style from  '../FormOrder.module.css'
+import  style from  './FormOrder.module.css'
 
 // form for add edit confirm contact
  export default function FormSearchOrder(props) {
