@@ -29,12 +29,12 @@ export const taskSlice = createSlice({
 // export action addTask from taskSlice
 export const {changeSortOrderNumber, changeSortOrderStatus, changeSortOrderDay, changeSortEstimateStartDate} = taskSlice.actions;
 // export action get orderNumberSort
-export const getOrderNumberSort =  (state) => state.orderNumberSort
+export const getOrderNumberSort =  (state) => state.order.orderNumberSort
 // export action get orderStatusSort
-export const getOrderStatusSort =  (state) => state.orderStatusSort
+export const getOrderStatusSort =  (state) => state.order.orderStatusSort
 // export action get orderDaySort
-export const getOrderDaySort =  (state) => state.orderDaySort
+export const getOrderDaySort =  (state) => state.order.orderDaySort
 // export action get estimateStartDateSort
-export const getEstimateStartDateSort =  (state) => state.estimateStartDateSort
+export const getEstimateStartDateSort =  (state) => state.order.estimateStartDateSort
 
 export default taskSlice.reducer

@@ -19,26 +19,27 @@ import {
     getOrderNumberSort, 
     getEstimateStartDateSort, 
 } from '../../components/order/slice';
+import LoadingSpinner from "../../components/loading/LoadingSpinner";
 
 export default function List() {
     const dispatch = useDispatch();
     var [listOrder, setListOrder] = useState([]);
-    // var [orderNumberSort, setOrderNumberSort] = useState('asc');
-    // var [orderStatusSort, setOrderStatusSort] = useState('asc');
-    // var [orderDaySort, setOrderDaySort] = useState('asc');
-    // var [estimateStartDateSort, setEstimateStartDateSort] = useState('asc');
-    var orderNumberSort = useSelector((state) => state.orderNumberSort)
-    var orderStatusSort = useSelector((state) => state.orderStatusSort)
-    var orderDaySort = useSelector((state) => state.orderDaySort)
-    var estimateStartDateSort = useSelector((state) => state.estimateStartDateSort)
+    var orderNumberSort = useSelector(getOrderNumberSort)
+    var orderStatusSort = useSelector(getOrderStatusSort)
+    var orderDaySort = useSelector(getOrderDaySort)
+    var estimateStartDateSort = useSelector(getEstimateStartDateSort)
 
     var [selectedRow, setSelectedRow] = useState(-1);
     var [clickedEdit, setClickedEdit] = useState(false);
     var [deleteStatus, setDeleteStatus] = useState(false);
 
+    const [isLoading, setIsLoading] = useState(false);
+
     useEffect(() => {
         const loadData = async () => {
+            setIsLoading(true);
             const response = await fetch('/api/order/list').then(res => res.json()).catch()
+            setIsLoading(false);
             // var orders = JSON.parse(response);
             //dynamo
             if(response.Items) {
@@ -49,29 +50,27 @@ export default function List() {
         }
         loadData()
     }, [deleteStatus])
-    console.log('orderNumberSort',orderNumberSort)
 
     const handleStatusSort = function(fieldName) {
         switch(fieldName) {
             case 'orderNumber':
                 let listOrderSortedByOrderNumber = handleSortDataOrders(listOrder, 'orderNumber', orderNumberSort)
-                // setOrderNumberSort(orderNumberSort === 'asc' ? 'desc' : 'asc');
                 dispatch(changeSortOrderNumber({status: (orderNumberSort === 'asc' ? 'desc' : 'asc')}))
                 setListOrder(listOrderSortedByOrderNumber);
                 break
             case 'orderStatus':
                 let listOrderSortedByOrderStatus = handleSortDataOrders(listOrder, 'orderStatus', orderStatusSort)
-                setOrderStatusSort(orderStatusSort === 'asc' ? 'desc' : 'asc');
+                dispatch(changeSortOrderStatus({status: (orderStatusSort === 'asc' ? 'desc' : 'asc')}))
                 setListOrder(listOrderSortedByOrderStatus);
                 break
             case 'orderDay':
                 let listOrderSortedByOrderDay = handleSortDataOrders(listOrder, 'orderDay', orderDaySort)
-                setOrderDaySort(orderDaySort === 'asc' ? 'desc' : 'asc');
+                dispatch(changeSortOrderDay({status : orderDaySort === 'asc' ? 'desc' : 'asc'}))
                 setListOrder(listOrderSortedByOrderDay);
                 break
             default:
                 let listOrderSortedByEstimateStartDate = handleSortDataOrders(listOrder, 'estimateStartDate', estimateStartDateSort)
-                setEstimateStartDateSort(estimateStartDateSort === 'asc' ? 'desc' : 'asc');
+                dispatch(changeSortEstimateStartDate({status: estimateStartDateSort === 'asc' ? 'desc' : 'asc'}))
                 setListOrder(listOrderSortedByEstimateStartDate);
                 break
         }
@@ -118,7 +117,7 @@ export default function List() {
                 handleSearchListOrder(data)
             }}/>
             {(selectedRow === -1) && clickedEdit && <div className="alert alert-danger">Please choose one.</div>}
-            <table className="table table-bordered align-middle text-center">
+            {isLoading ? <LoadingSpinner /> : <table className="table table-bordered align-middle text-center" >
                 <thead className={`align-middle ${style.headerTable}`}> 
                     <tr>
                         <th scope="col" rowSpan={2}>No</th>
@@ -179,7 +178,7 @@ export default function List() {
                         })
                     }
                 </tbody>
-            </table>
+            </table>}
             <div className={`d-flex justify-content-between ${style.widthBlockButton}`}>
                 <button type="button" className="btn btn-primary"><Link className="text-light text-decoration-none" href='/order/add'>Register</Link></button>
                 <button type="button" className="btn btn-warning">
@@ -196,7 +195,7 @@ export default function List() {
                         </a>
                     </Link>
                         </button>
-                <button type="button" className="btn btn-danger" onClick={() => {
+                <button type="button" className="btn btn-danger"  onClick={() => {
                     if(selectedRow !== -1) {
                         handleDeleteOrder(selectedRow)
                         setClickedEdit(false)
